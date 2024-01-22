@@ -1,0 +1,137 @@
+PART A-Download and configure eclipse IDE and tomcat server
+Download Eclipse and Tomcat zip folder of any version(try choosing latest version)
+Set runtime environment of tomcat in eclipse
+Windows
+Preferences
+Server 
+ Runtime environment 
+Choose the version of apache
+Then add the path of the tomcat includes all the folders.
+Add the server 
+PART-B
+ Let's see the steps, you need to follow to create the first servlet example.
+Create a Dynamic web project
+create a servlet
+add servlet-api.jar file
+Run the servlet
+1) Create the dynamic web project:
+For creating a dynamic web project 
+click on File Menu -> New -> Dynamic web project -> write your project name e.g. first -> Finish.
+2) Create the servlet in eclipse IDE:
+For creating a servlet, explore the project by clicking the + icon -> explore the Java Resources -> right click on project or application -> New -> servlet -> write your servlet name e.g. Hello -> uncheck all the checkboxes except doGet() -> next -> Finish.
+3) add jar file in eclipse IDE:
+For adding a jar file, right click on your project -> Build Path -> Configure Build Path
+ -> click on Libraries tab in Java Build Path -> click on Add External JARs button
+ -> select the servlet-api.jar file under tomcat/lib -> ok.
+
+4) Start the server and deploy the project:
+For starting the server and deploying the project in one step, Right click on your project -> Run As -> Run on Server -> choose tomcat server -> next -> addAll -> finish.
+
+
+Program 11
+ A web application that takes name and age from an HTML page. If the age is less than 18, it should send a page with “Hello , you are not authorized to visit the site” message, where should be replaced with the entered name. Otherwise it should send “Welcome to this site” message.
+AIM: To design an application to validate age are less than 18 or more than 18 using SERVLET.
+index.html:
+<html
+<head>
+<title>VoterApp</title>
+</head>
+<body>
+<form action= "http://localhost:8080/CheckAge/check" method="get">
+<fieldset style="width:20%; background-color:#80ffcc">
+<table>
+<tr><td>Name</td><td><input type="text" name="name"></td></tr>
+<tr><td>Age</td><td><input type="text" name="age"></td></tr>
+<tr><td></td>
+<td><input type = "submit" value="Check Eligibility"></td></tr>
+</table>
+</fieldset>
+</form>
+</body>
+</html>
+VoterSrv.java:
+import java.io.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class VoterSrv extends HttpServlet
+
+{
+public void service(HttpServletRequest req, HttpServletResponse res) throws IOException,ServletException
+{
+//set response content type
+ res.setContentType("text/html");
+//get printWrite obj
+PrintWriter pw = res.getWriter();
+//read form data from page as request parameter 
+String name = req.getParameter("name");
+int age = Integer.parseInt(req.getParameter("age")); if (age>=18)
+{
+pw.println("<font color='green' size='4'>Welcome "+name+" to this site</font>");
+}
+else
+pw.println("<font color='red' size='4'>Hello "+name+", you are not authorized to visit the site</font>");
+
+//add hyperlink to dynamic page
+ pw.println("<br><br><a href= 'index.html'>back</a>");
+//close the stream 
+pw.close();
+}
+}
+web.xml:
+<web-app>
+<servlet>
+<servlet-name>abc</servlet-name>
+<servlet-class>VoterSrv</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>abc</servlet-name>
+<url-pattern>/check</url-pattern>
+</servlet-mapping>
+</web-app>
+
+12.  A web application that takes a name as input and on submits it shows a hello <name> page where name is taken from the request. It shows the start time at the right top corner of the page and provides a logout button. On clicking this button, it should show a logout page with Thank You <name > message with the duration of usage (hint: Use session to store name and time) USING JSP.
+
+Sessionjsp.html
+<html>
+<head> <title> SESSION LOGIN </title> </head>
+<body>
+<center>
+<form action="http://localhost:8080/jsp/Session1.jsp" method="get"> Enter Name: <input type="text" name="uname"> <br>
+<input type="submit" value="LOGIN" name="register">
+</form>
+</center>
+</body>
+</html>
+Session1.jsp
+<%@page language="java" import="java.util.*" errorPage=""%>
+<form method="get" action="http://localhost:8080/jsp/Session2.jsp">
+<%
+Date d=new Date();
+%>
+<p align="right"> Time;<%=d.getTime()%></p>
+<%
+String un=request.getParameter("uname"); session.setAttribute("user",un); session.setAttribute("time",d.getTime());
+%>
+Hello <%=un%>
+<br><br>
+<input type="submit" value="logout">
+</form>
+Session2.jsp
+<%@page language="java" import="java.util.*" errorPage=""%>
+<%
+Date d2=new Date();
+String un=(String)session.getAttribute("user"); Long t1=(Long)session.getAttribute("time"); Long t2=d2.getTime();
+%>
+Thank you <%=un%>
+<br><br>
+Session duration: <%=(t2-t1)/(60*60)%> seconds
+<% session.invalidate();%>
+
+
+
+
+
+
+
